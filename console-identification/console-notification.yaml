@@ -1,0 +1,10 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleNotification
+metadata:
+  name: cluster-identity
+spec:
+  text: FLEETCARRIER - MAINDECK
+  location: BannerTopBottom
+  color: '#fff'
+  #backgroundColor: '#ac0f3f'
+  backgroundColor: '#333'
