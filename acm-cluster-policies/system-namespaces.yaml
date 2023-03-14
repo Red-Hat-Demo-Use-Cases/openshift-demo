@@ -1,0 +1,90 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: system-namespaces
+  namespace: openshift-acm-policies
+  annotations:
+    policy.open-cluster-management.io/categories: Access Management
+    policy.open-cluster-management.io/controls: Configurations
+    policy.open-cluster-management.io/standards: Configurations
+spec:
+  
+  disabled: false
+
+  remediationAction: enforce
+  policy-templates:
+
+    ## Create the openid secret (openid secret is mandatory, so if we use a public instance, just throw somehing random here)
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: namespace-a
+        spec:
+          remediationAction: enforce
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: namespace-a
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: namespace-b
+        spec:
+          remediationAction: enforce
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: namespace-b
+
+
+
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: system-namespaces-placement
+  namespace: openshift-acm-policies
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+      - key: managed
+        operator: In
+        values:
+          - "true"
+      - key: topgun
+        operator: In
+        values:
+          - "true"
+
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: system-namespaces-placement-binding
+  namespace: openshift-acm-policies
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: system-namespaces-placement
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: system-namespaces
