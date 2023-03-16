@@ -3,7 +3,7 @@ kind: ConsoleNotification
 metadata:
   name: cluster-identity
 spec:
-  text: FLEETCARRIER - MAINDECK
-  location: BannerTopBottom
+  text: This cluster is now managed by ACM :)
+  location: BannerTop
   color: '#fff'
   backgroundColor: '#ac0f3f'

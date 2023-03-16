@@ -1,0 +1,71 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: no-kubeadmin-user
+  namespace: openshift-acm-policies
+  annotations:
+    policy.open-cluster-management.io/categories: Access Management
+    policy.open-cluster-management.io/standards: Configurations
+    policy.open-cluster-management.io/controls: Configurations
+spec:
+  disabled: false
+  # remediationAction: enforce
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: remove-kubeadmin-secret
+        spec:
+          remediationAction: inform
+          severity: high
+          namespaceSelector:
+            include:
+              - kube-system
+          object-templates:
+            - complianceType: mustnothave
+              objectDefinition:
+                apiVersion: v1
+                kind: Secret
+                metadata:
+                  name: kubeadmin
+
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: no-kubeadmin-user-placement
+  namespace: openshift-acm-policies
+spec:
+  clusterConditions:
+  - status: "True"
+    type: ManagedClusterConditionAvailable
+  clusterSelector:
+    matchExpressions:
+      - key: managed
+        operator: In
+        values:
+          - "true"
+      - key: topgun
+        operator: In
+        values:
+          - "true"
+      - key: local-cluster
+        operator: NotIn
+        values:
+          - "true"
+
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: no-kubeadmin-user-placement-binding
+  namespace: openshift-acm-policies
+placementRef:
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+  name: no-kubeadmin-user-placement
+subjects:
+- apiGroup: policy.open-cluster-management.io
+  kind: Policy
+  name: no-kubeadmin-user
