@@ -3,7 +3,8 @@ kind: ConsoleNotification
 metadata:
   name: cluster-identity
 spec:
-  text: This cluster is now managed by ACM :)
+  text: This cluster managed by ACM :)
   location: BannerTop
+  href: 'https://www.example.com'
   color: '#fff'
   backgroundColor: '#ac0f3f'
