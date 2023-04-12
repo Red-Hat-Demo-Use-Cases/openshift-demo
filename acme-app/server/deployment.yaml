@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acme-webserver-deploymentconfig
+  namespace: acme
+  labels:
+    app: acme-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acme-webserver
+
+  template:
+    metadata:
+      labels:
+        app: acme-webserver
+      annotations:
+        pod.info/cluster: "Maindeck"
+        pod.info/image: "quay.io/dovid/acme-app:1.37"
+    spec:
+      containers:
+
+        - name: webserver
+          image: "quay.io/dovid/acme-app:1.37"
+          
+          ports:
+            - containerPort: 8080
+            - containerPort: 9922
+          
+          securityContext:
+            runAsNonRoot: true
+
+          ## Demonstrate how to manage ENV vars in deployment
+          ## https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
+          ## All meta fields: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.19/#objectfieldselector-v1-core
+          env:
+            # From resources reference
+            # - name: CONTAINER_CPU_LIMIT
+            #   valueFrom:
+            #     resourceFieldRef:
+            #       containerName: webserver
+            #       resource: cpu.limit
+
+            - name: DATABASE_HOST
+              value: mariadb-3306
+
+            # From annotations reference
+            - name: CLUSTER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['pod.info/cluster']
+
+            # From annotations reference
+            - name: CONTAINER_IMAGE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['pod.info/image']
+
+            # From deployment metadata
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+
+            # From status reference
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+            # From deployment specs
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName

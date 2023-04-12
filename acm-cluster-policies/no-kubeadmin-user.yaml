@@ -18,7 +18,7 @@ spec:
           name: remove-kubeadmin-secret
         spec:
           remediationAction: inform
-          severity: high
+          severity: low
           namespaceSelector:
             include:
               - kube-system
