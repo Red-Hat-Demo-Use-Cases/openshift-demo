@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- https://raw.githubusercontent.com/openshift/pipelines-tutorial/pipelines-1.8/01_pipeline/01_apply_manifest_task.yaml
+- https://raw.githubusercontent.com/openshift/pipelines-tutorial/pipelines-1.8/01_pipeline/02_update_deployment_task.yaml
+
+- task-debug.yaml
+- task-apply-kustomize.yaml
