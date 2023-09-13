@@ -8,7 +8,7 @@ metadata:
     policy.open-cluster-management.io/standards: Configurations
     policy.open-cluster-management.io/controls: Configurations
 spec:
-  disabled: false
+  disabled: true
   # remediationAction: enforce
   policy-templates:
     - objectDefinition:
@@ -43,10 +43,6 @@ spec:
   clusterSelector:
     matchExpressions:
       - key: managed
-        operator: In
-        values:
-          - "true"
-      - key: topgun
         operator: In
         values:
           - "true"

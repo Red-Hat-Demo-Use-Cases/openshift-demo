@@ -1,75 +1,75 @@
-apiVersion: policy.open-cluster-management.io/v1
-kind: Policy
-metadata:
-  name: apply-tenant-deny-by-default-networkpolicy
-  namespace: openshift-acm-policies
-  annotations:
-    policy.open-cluster-management.io/standards: Tenants Security
-    policy.open-cluster-management.io/categories: Network Security
-    policy.open-cluster-management.io/controls: New Tenant Baseline Configuration
-spec:
-  remediationAction: enforce
-  disabled: false
+# apiVersion: policy.open-cluster-management.io/v1
+# kind: Policy
+# metadata:
+#   name: apply-tenant-deny-by-default-networkpolicy
+#   namespace: openshift-acm-policies
+#   annotations:
+#     policy.open-cluster-management.io/standards: Tenants Security
+#     policy.open-cluster-management.io/categories: Network Security
+#     policy.open-cluster-management.io/controls: New Tenant Baseline Configuration
+# spec:
+#   remediationAction: enforce
+#   disabled: false
   
-  policy-templates:
+#   policy-templates:
 
-  - objectDefinition:
-      apiVersion: policy.open-cluster-management.io/v1
-      kind: ConfigurationPolicy
-      metadata:
-        name: apply-tenant-deny-by-default-networkpolicy
+#   - objectDefinition:
+#       apiVersion: policy.open-cluster-management.io/v1
+#       kind: ConfigurationPolicy
+#       metadata:
+#         name: apply-tenant-deny-by-default-networkpolicy
       
-      spec:
-        remediationAction: enforce
-        severity: high
-        namespaceSelector:
-          exclude: 
-          - "kube-*"
-          - "default"
-          - "open-cluster-management-*"
-          - "openshift-"
-          include:
-            - "tenant-*"
+#       spec:
+#         remediationAction: enforce
+#         severity: high
+#         namespaceSelector:
+#           exclude: 
+#           - "kube-*"
+#           - "default"
+#           - "open-cluster-management-*"
+#           - "openshift-"
+#           include:
+#             - "tenant-*"
         
-        object-templates:
-          - complianceType: musthave
-            objectDefinition:    
-              kind: NetworkPolicy
-              apiVersion: networking.k8s.io/v1
-              metadata:
-                name: deny-by-default
-              spec:
-                podSelector: {}
-                ingress: []
+#         object-templates:
+#           - complianceType: musthave
+#             objectDefinition:    
+#               kind: NetworkPolicy
+#               apiVersion: networking.k8s.io/v1
+#               metadata:
+#                 name: deny-by-default
+#               spec:
+#                 podSelector: {}
+#                 ingress: []
 
----
-apiVersion: apps.open-cluster-management.io/v1
-kind: PlacementRule
-metadata:
-  name: apply-tenant-deny-by-default-networkpolicy-placement
-  namespace: openshift-acm-policies
-spec:
-  clusterConditions:
-  - status: "True"
-    type: ManagedClusterConditionAvailable
-  clusterSelector:
-    matchExpressions:
-      - key: managed
-        operator: In
-        values:
-          - "true"
+# ---
+# apiVersion: apps.open-cluster-management.io/v1
+# kind: PlacementRule
+# metadata:
+#   name: apply-tenant-deny-by-default-networkpolicy-placement
+#   namespace: openshift-acm-policies
+# spec:
+#   clusterConditions:
+#   - status: "True"
+#     type: ManagedClusterConditionAvailable
+#   clusterSelector:
+#     matchExpressions:
+#       - key: managed
+#         operator: In
+#         values:
+#           - "true"
 
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: apply-tenant-deny-by-default-networkpolicy-binding
-  namespace: openshift-acm-policies
-placementRef:
-  apiGroup: apps.open-cluster-management.io
-  kind: PlacementRule
-  name: apply-tenant-deny-by-default-networkpolicy-placement
-subjects:
-- apiGroup: policy.open-cluster-management.io
-  kind: Policy
-  name: apply-tenant-deny-by-default-networkpolicy
+# ---
+# apiVersion: policy.open-cluster-management.io/v1
+# kind: PlacementBinding
+# metadata:
+#   name: apply-tenant-deny-by-default-networkpolicy-binding
+#   namespace: openshift-acm-policies
+# placementRef:
+#   apiGroup: apps.open-cluster-management.io
+#   kind: PlacementRule
+#   name: apply-tenant-deny-by-default-networkpolicy-placement
+# subjects:
+# - apiGroup: policy.open-cluster-management.io
+#   kind: Policy
+#   name: apply-tenant-deny-by-default-networkpolicy

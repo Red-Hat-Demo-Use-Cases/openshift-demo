@@ -22,7 +22,7 @@ spec:
           severity: low
           namespaceSelector:
             include:
-              - tenant-*
+              - "tenant-*"
           object-templates:
             
             - complianceType: musthave
