@@ -17,7 +17,7 @@ spec:
       labels:
         app: acme-webserver
       annotations:
-        pod.info/cluster: "Maindeck"
+        # pod.info/cluster: "Maindeck"
         pod.info/image: "quay.io/dovid/acme-app:1.37"
     spec:
       containers:

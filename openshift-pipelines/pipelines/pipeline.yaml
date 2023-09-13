@@ -20,14 +20,15 @@ spec:
     - description: Image name to be build
       name: IMAGE
       type: string
+  
   tasks:
 
     - name: fetch-repository
       params:
         - name: url
           value: $(params.git-url)
-        - name: deleteExisting
-          value: 'true'
+        # - name: deleteExisting
+        #   value: 'true'
         - name: revision
           value: $(params.git-revision)
       taskRef:
@@ -37,16 +38,13 @@ spec:
         - name: output
           workspace: shared-workspace
 
-    - name: create-feature-namespace
-      params:
-        - name: SCRIPT
-          value: 'oc create ns $(params.deployment-name)-$(params.git-revision)'
-      taskRef:
-        kind: ClusterTask
-        name: openshift-client
-      workspaces:
-        - name: source
-          workspace: shared-workspace
+    # - name: create-feature-namespace
+    #   params:
+    #     - name: SCRIPT
+    #       value: 'oc create ns $(params.deployment-name)-$(params.git-revision)'
+    #   taskRef:
+    #     kind: ClusterTask
+    #     name: openshift-client
     
     - name: build-image
       params:
@@ -56,16 +54,21 @@ spec:
           value: 'quay.io/dovid/$(params.IMAGE):$(tasks.fetch-repository.results.commit)'
         - name: CONTEXT
           value: $(params.git-subdirectory)
+        - name: DOCKERFILE
+          value: ./Containerfile
+        - name: FORMAT
+          value: oci
       runAfter:
         - fetch-repository
       taskRef:
         kind: ClusterTask
         name: buildah
       workspaces:
+
         - name: source
           workspace: shared-workspace
 
-        - name: dockerconfig-ws
+        - name: dockerconfig
           workspace: dockerconfig-workspace
     
 
