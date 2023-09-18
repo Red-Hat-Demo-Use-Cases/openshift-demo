@@ -29,8 +29,8 @@ spec:
             - containerPort: 8080
             - containerPort: 9922
           
-          securityContext:
-            runAsNonRoot: true
+          # securityContext:
+          #   runAsNonRoot: true
 
           ## Demonstrate how to manage ENV vars in deployment
           ## https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
